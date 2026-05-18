@@ -1,0 +1,1028 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Activity Tracker</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<style>
+:root {
+  --bg: #0f0f0f;
+  --surface: #171717;
+  --surface2: #1e1e1e;
+  --surface3: #262626;
+  --border: rgba(255,255,255,0.07);
+  --border2: rgba(255,255,255,0.12);
+  --text: #f0f0f0;
+  --text2: #999;
+  --text3: #555;
+  --purple: #9580ff;
+  --purple-dim: rgba(149,128,255,0.12);
+  --green: #3ecf8e;
+  --green-dim: rgba(62,207,142,0.1);
+  --amber: #f5a623;
+  --amber-dim: rgba(245,166,35,0.1);
+  --red: #e05260;
+  --blue: #58a6ff;
+  --blue-dim: rgba(88,166,255,0.1);
+  --pink: #f778ba;
+  --radius: 10px;
+  --radius-sm: 6px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  font-size: 14px;
+  line-height: 1.5;
+}
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--surface3); border-radius: 4px; }
+
+/* Layout */
+.layout { display: flex; height: 100vh; overflow: hidden; }
+.sidebar {
+  width: 220px;
+  flex-shrink: 0;
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  padding: 16px 0;
+  overflow-y: auto;
+}
+.main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+.topbar {
+  padding: 14px 24px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--surface);
+  flex-shrink: 0;
+}
+.content { flex: 1; overflow-y: auto; padding: 24px; background: var(--bg); }
+
+/* Sidebar */
+.logo {
+  padding: 0 16px 16px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--text);
+}
+.logo i { color: var(--purple); font-size: 18px; }
+.nav-section { padding: 0 10px; margin-bottom: 16px; }
+.nav-label {
+  font-size: 10px;
+  color: var(--text3);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  padding: 0 6px;
+  margin-bottom: 4px;
+}
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 8px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  color: var(--text2);
+  font-size: 13px;
+  transition: all .15s;
+  border: none;
+  background: none;
+  width: 100%;
+  text-align: left;
+}
+.nav-item:hover { background: var(--surface3); color: var(--text); }
+.nav-item.active { background: var(--purple-dim); color: var(--purple); }
+.nav-item i { font-size: 16px; }
+.cat-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+.cat-count {
+  margin-left: auto;
+  font-size: 11px;
+  color: var(--text3);
+  background: var(--surface3);
+  padding: 1px 6px;
+  border-radius: 20px;
+  font-family: 'DM Mono', monospace;
+}
+.sidebar-footer {
+  margin-top: auto;
+  padding: 12px 16px 0;
+  border-top: 1px solid var(--border);
+}
+.reminder-item {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 6px 0;
+  font-size: 12px;
+  color: var(--text2);
+  border-bottom: 1px solid var(--border);
+}
+.reminder-item:last-child { border-bottom: none; }
+.reminder-item i { color: var(--amber); font-size: 13px; }
+
+/* Topbar */
+.view-tabs { display: flex; gap: 2px; }
+.view-tab {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  font-size: 13px;
+  color: var(--text2);
+  border: none;
+  background: none;
+  transition: all .15s;
+}
+.view-tab:hover { background: var(--surface3); color: var(--text); }
+.view-tab.active { background: var(--surface3); color: var(--text); }
+.view-tab i { font-size: 15px; }
+.add-task-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  background: var(--purple);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  font-size: 13px;
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 500;
+  transition: opacity .15s;
+}
+.add-task-btn:hover { opacity: .85; }
+
+/* Stats */
+.stats-row { display: grid; grid-template-columns: repeat(4,1fr); gap: 12px; margin-bottom: 20px; }
+.stat-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px 16px;
+}
+.stat-num { font-size: 26px; font-weight: 300; font-family: 'DM Mono', monospace; }
+.stat-label { font-size: 11px; color: var(--text3); margin-top: 2px; text-transform: uppercase; letter-spacing: .5px; }
+.stat-card.purple .stat-num { color: var(--purple); }
+.stat-card.green .stat-num { color: var(--green); }
+.stat-card.amber .stat-num { color: var(--amber); }
+
+/* Progress */
+.progress-bar { height: 3px; background: var(--surface3); border-radius: 2px; overflow: hidden; }
+.progress-fill { height: 100%; background: var(--green); border-radius: 2px; transition: width .4s ease; }
+
+/* Task cards */
+.task-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 12px 14px;
+  margin-bottom: 8px;
+  cursor: pointer;
+  transition: border-color .15s;
+}
+.task-card:hover { border-color: var(--border2); }
+.task-top { display: flex; align-items: flex-start; gap: 10px; }
+.task-check {
+  width: 16px; height: 16px;
+  border-radius: 4px;
+  border: 1.5px solid var(--border2);
+  flex-shrink: 0;
+  margin-top: 2px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all .15s;
+}
+.task-check:hover { border-color: var(--green); }
+.task-check.done { background: var(--green); border-color: var(--green); }
+.task-check.done i { color: #0f0f0f; font-size: 10px; }
+.task-title { font-size: 13px; font-weight: 500; flex: 1; line-height: 1.4; }
+.task-title.done { text-decoration: line-through; color: var(--text3); }
+.task-meta { display: flex; gap: 6px; align-items: center; margin-top: 5px; flex-wrap: wrap; }
+.tag {
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: 20px;
+  font-weight: 500;
+  font-family: 'DM Mono', monospace;
+}
+.tag.radio { background: rgba(149,128,255,0.12); color: #b3a0ff; }
+.tag.research { background: rgba(62,207,142,0.1); color: #3ecf8e; }
+.tag.application { background: rgba(245,166,35,0.1); color: #f5a623; }
+.tag.other { background: rgba(255,255,255,0.05); color: #888; }
+.tag.custom { background: rgba(247,120,186,0.1); color: #f778ba; }
+.task-date { font-size: 11px; color: var(--text3); display: flex; align-items: center; gap: 3px; }
+.task-note { font-size: 11px; color: var(--text3); margin-top: 4px; font-style: italic; }
+.delete-btn {
+  background: none;
+  border: none;
+  color: var(--text3);
+  cursor: pointer;
+  padding: 2px 4px;
+  border-radius: 4px;
+  font-size: 14px;
+  transition: color .15s;
+}
+.delete-btn:hover { color: var(--red); }
+.status-badge {
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: 20px;
+  font-family: 'DM Mono', monospace;
+}
+.status-badge.inprogress { background: var(--blue-dim); color: var(--blue); }
+.status-badge.todo { background: rgba(255,255,255,0.04); color: var(--text3); }
+.status-badge.done { background: var(--green-dim); color: var(--green); }
+
+/* Kanban */
+.kanban { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+.kanban-col {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 12px;
+  min-height: 300px;
+}
+.col-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--border);
+}
+.col-title { font-size: 12px; font-weight: 500; text-transform: uppercase; letter-spacing: .5px; color: var(--text2); }
+.col-count {
+  font-size: 11px;
+  font-family: 'DM Mono', monospace;
+  background: var(--surface3);
+  padding: 1px 7px;
+  border-radius: 20px;
+  color: var(--text3);
+}
+
+/* Calendar */
+.cal-nav { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+.cal-title { font-size: 15px; font-weight: 500; }
+.cal-nav-btn {
+  background: none;
+  border: 1px solid var(--border);
+  color: var(--text2);
+  border-radius: var(--radius-sm);
+  padding: 5px 10px;
+  cursor: pointer;
+  font-size: 13px;
+}
+.cal-nav-btn:hover { background: var(--surface3); color: var(--text); }
+.cal-grid { display: grid; grid-template-columns: repeat(7,1fr); gap: 3px; }
+.cal-day-name { text-align: center; font-size: 11px; color: var(--text3); padding: 4px 0; text-transform: uppercase; letter-spacing: .5px; }
+.cal-cell {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 6px 5px;
+  min-height: 58px;
+  cursor: pointer;
+  transition: border-color .15s;
+}
+.cal-cell:hover { border-color: var(--border2); }
+.cal-cell.today { border-color: var(--purple); background: var(--purple-dim); }
+.cal-cell.has-task { border-left: 2px solid var(--purple); }
+.cal-cell.other-month { opacity: .3; }
+.cal-num { font-size: 11px; font-family: 'DM Mono', monospace; color: var(--text2); margin-bottom: 3px; }
+.cal-cell.today .cal-num { color: var(--purple); font-weight: 500; }
+.cal-pip { width: 5px; height: 5px; border-radius: 50%; margin: 1px 0; }
+
+/* Special */
+.special-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px;
+  margin-bottom: 12px;
+}
+.special-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 12px; }
+.special-title { font-size: 14px; font-weight: 500; margin-bottom: 4px; }
+.step-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 0;
+  font-size: 13px;
+  border-bottom: 1px solid var(--border);
+  cursor: pointer;
+}
+.step-row:last-child { border-bottom: none; }
+.step-row.done-step { color: var(--text3); text-decoration: line-through; }
+.step-check {
+  width: 14px; height: 14px;
+  border-radius: 3px;
+  border: 1.5px solid var(--border2);
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all .15s;
+}
+.step-check.done { background: var(--green); border-color: var(--green); }
+.step-check.done i { color: #0f0f0f; font-size: 9px; }
+
+/* Modal */
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  backdrop-filter: blur(2px);
+}
+.modal {
+  background: var(--surface);
+  border: 1px solid var(--border2);
+  border-radius: 14px;
+  padding: 22px;
+  width: 380px;
+  max-width: 95vw;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+.modal-title { font-size: 15px; font-weight: 500; margin-bottom: 18px; display: flex; align-items: center; gap: 8px; }
+.modal-title i { color: var(--purple); }
+.form-group { margin-bottom: 13px; }
+.form-label { font-size: 11px; color: var(--text3); text-transform: uppercase; letter-spacing: .5px; margin-bottom: 5px; display: block; }
+.form-input, .form-select, .form-textarea {
+  width: 100%;
+  padding: 8px 11px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text);
+  font-size: 13px;
+  font-family: 'DM Sans', sans-serif;
+  transition: border-color .15s;
+  outline: none;
+}
+.form-input:focus, .form-select:focus, .form-textarea:focus { border-color: var(--purple); }
+.form-select option { background: var(--surface2); }
+.form-textarea { resize: vertical; min-height: 60px; }
+.range-row { display: flex; align-items: center; gap: 10px; }
+.form-range {
+  flex: 1;
+  -webkit-appearance: none;
+  height: 4px;
+  background: var(--surface3);
+  border-radius: 2px;
+  outline: none;
+}
+.form-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 14px; height: 14px;
+  border-radius: 50%;
+  background: var(--purple);
+  cursor: pointer;
+}
+.range-val { font-family: 'DM Mono', monospace; font-size: 12px; color: var(--text2); min-width: 30px; }
+.modal-actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 18px; }
+.btn { padding: 7px 16px; border-radius: var(--radius-sm); cursor: pointer; font-size: 13px; font-family: 'DM Sans', sans-serif; font-weight: 500; border: none; transition: all .15s; }
+.btn-ghost { background: transparent; border: 1px solid var(--border); color: var(--text2); }
+.btn-ghost:hover { background: var(--surface3); color: var(--text); }
+.btn-primary { background: var(--purple); color: #fff; }
+.btn-primary:hover { opacity: .85; }
+
+/* Toast */
+.toast {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  background: var(--surface);
+  border: 1px solid var(--border2);
+  border-radius: var(--radius);
+  padding: 11px 16px;
+  font-size: 13px;
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  animation: slideUp .25s ease;
+  box-shadow: 0 8px 30px rgba(0,0,0,.4);
+}
+.toast i { color: var(--purple); }
+@keyframes slideUp { from { opacity:0; transform: translateY(10px); } to { opacity:1; transform: translateY(0); } }
+
+/* Empty state */
+.empty { text-align: center; padding: 50px 20px; color: var(--text3); font-size: 13px; }
+.empty i { font-size: 32px; display: block; margin-bottom: 10px; opacity: .3; }
+
+/* Section label */
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+.section-title { font-size: 12px; color: var(--text3); text-transform: uppercase; letter-spacing: .5px; }
+.inline-add {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12px;
+  color: var(--text3);
+  background: none;
+  border: 1px dashed var(--border);
+  border-radius: var(--radius-sm);
+  padding: 4px 10px;
+  cursor: pointer;
+  transition: all .15s;
+}
+.inline-add:hover { border-color: var(--purple); color: var(--purple); }
+</style>
+</head>
+<body>
+
+<div class="layout">
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <div class="logo"><i class="ti ti-activity"></i> Tracker</div>
+    <div class="nav-section">
+      <div class="nav-label">Views</div>
+      <button class="nav-item active" onclick="switchView('dashboard')"><i class="ti ti-layout-dashboard"></i> Dashboard</button>
+      <button class="nav-item" onclick="switchView('kanban')"><i class="ti ti-columns"></i> Board</button>
+      <button class="nav-item" onclick="switchView('calendar')"><i class="ti ti-calendar"></i> Calendar</button>
+      <button class="nav-item" onclick="switchView('special')"><i class="ti ti-star"></i> Special</button>
+    </div>
+    <div class="nav-section">
+      <div class="nav-label">Categories</div>
+      <div id="sidebar-cats"></div>
+      <button class="nav-item" onclick="openAddCat()" style="margin-top:4px;color:var(--text3)"><i class="ti ti-plus"></i> New category</button>
+    </div>
+    <div class="sidebar-footer">
+      <div class="nav-label" style="margin-bottom:8px">Reminders</div>
+      <div id="sidebar-reminders"></div>
+    </div>
+  </div>
+
+  <!-- Main -->
+  <div class="main">
+    <div class="topbar">
+      <div class="view-tabs">
+        <button class="view-tab active" onclick="switchView('dashboard')"><i class="ti ti-layout-dashboard"></i> Dashboard</button>
+        <button class="view-tab" onclick="switchView('kanban')"><i class="ti ti-columns"></i> Board</button>
+        <button class="view-tab" onclick="switchView('calendar')"><i class="ti ti-calendar"></i> Calendar</button>
+        <button class="view-tab" onclick="switchView('special')"><i class="ti ti-star"></i> Special</button>
+      </div>
+      <button class="add-task-btn" onclick="openAddTask()"><i class="ti ti-plus" style="font-size:15px"></i> Add task</button>
+    </div>
+    <div class="content" id="main-content"></div>
+  </div>
+</div>
+
+<div id="modal-root"></div>
+<div id="toast-root"></div>
+
+<script>
+// ── State & Persistence ──────────────────────────────────────────
+const DEFAULT_STATE = {
+  view: 'dashboard',
+  calYear: new Date().getFullYear(),
+  calMonth: new Date().getMonth(),
+  tasks: [
+    {id:1,title:'Record episode 12',cat:'radio',status:'inprogress',date:'2026-05-18',reminder:'2026-05-18T09:00',note:'Prepare script first',progress:60,steps:[]},
+    {id:2,title:'Literature review — AI agents',cat:'research',status:'todo',date:'2026-05-20',reminder:'2026-05-20T10:00',note:'Focus on 2024-2025 papers',progress:20,steps:[]},
+    {id:3,title:'Submit grant application',cat:'application',status:'todo',date:'2026-05-22',reminder:'2026-05-22T08:00',note:'Deadline is strict',progress:0,steps:[]},
+    {id:4,title:'Edit podcast intro music',cat:'radio',status:'done',date:'2026-05-15',reminder:'',note:'',progress:100,steps:[]},
+    {id:5,title:'Interview notes cleanup',cat:'research',status:'inprogress',date:'2026-05-19',reminder:'2026-05-19T14:00',note:'',progress:40,steps:[]},
+  ],
+  categories: [
+    {id:'radio',label:'Radio work',color:'#9580ff'},
+    {id:'research',label:'Research',color:'#3ecf8e'},
+    {id:'application',label:'Application',color:'#f5a623'},
+    {id:'other',label:'Other',color:'#666'},
+  ],
+  specialTasks: [
+    {id:'sp1',title:'Research Grant Application',cat:'application',deadline:'2026-05-22',steps:[
+      {label:'Draft proposal',done:true},
+      {label:'Gather supporting documents',done:true},
+      {label:'Get signatures',done:false},
+      {label:'Submit online',done:false},
+    ]},
+  ],
+  nextId: 6,
+  nextSpId: 2,
+};
+
+function loadState() {
+  try {
+    const saved = localStorage.getItem('activity-tracker-v1');
+    if (saved) return JSON.parse(saved);
+  } catch(e) {}
+  return JSON.parse(JSON.stringify(DEFAULT_STATE));
+}
+
+function saveState() {
+  try { localStorage.setItem('activity-tracker-v1', JSON.stringify(state)); } catch(e) {}
+}
+
+let state = loadState();
+
+// ── Helpers ──────────────────────────────────────────────────────
+function getCat(id) { return state.categories.find(c=>c.id===id)||{label:id,color:'#666'}; }
+function tagClass(catId) {
+  const map = {radio:'radio',research:'research',application:'application',other:'other'};
+  return map[catId]||'custom';
+}
+function fmtDate(s) {
+  if(!s) return '';
+  const d = new Date(s+'T00:00');
+  return d.toLocaleDateString('en-GB',{month:'short',day:'numeric'});
+}
+function fmtDateTime(s) {
+  if(!s) return '';
+  const d = new Date(s);
+  return d.toLocaleDateString('en-GB',{month:'short',day:'numeric'}) + ' ' +
+    d.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
+}
+function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+// ── Notifications ────────────────────────────────────────────────
+function requestNotif() {
+  if(typeof Notification !== 'undefined' && Notification.permission === 'default') Notification.requestPermission();
+}
+const scheduledReminders = {};
+function scheduleReminder(task) {
+  if(!task.reminder || task.status==='done') return;
+  const rem = new Date(task.reminder);
+  const diff = rem - Date.now();
+  if(diff <= 0 || diff > 7*24*60*60*1000) return;
+  if(scheduledReminders[task.id]) clearTimeout(scheduledReminders[task.id]);
+  scheduledReminders[task.id] = setTimeout(()=>{
+    showToast(`Reminder: ${task.title}`);
+    if(typeof Notification !== 'undefined' && Notification.permission==='granted') {
+      new Notification('Activity Tracker', { body: task.title });
+    }
+  }, diff);
+}
+
+// ── Toast ────────────────────────────────────────────────────────
+function showToast(msg) {
+  const t = document.getElementById('toast-root');
+  const d = document.createElement('div');
+  d.className = 'toast';
+  d.innerHTML = `<i class="ti ti-bell"></i>${esc(msg)}`;
+  t.appendChild(d);
+  setTimeout(()=>d.remove(), 3200);
+}
+
+// ── Render ───────────────────────────────────────────────────────
+function render() {
+  saveState();
+  renderSidebar();
+  renderTopNav();
+  const mc = document.getElementById('main-content');
+  if(state.view==='dashboard') mc.innerHTML = renderDashboard();
+  else if(state.view==='kanban') mc.innerHTML = renderKanban();
+  else if(state.view==='calendar') mc.innerHTML = renderCalendar();
+  else if(state.view==='special') mc.innerHTML = renderSpecial();
+}
+
+function renderSidebar() {
+  // Categories
+  const cl = document.getElementById('sidebar-cats');
+  cl.innerHTML = state.categories.map(c=>`
+    <button class="nav-item" onclick="filterCat('${c.id}')">
+      <span class="cat-dot" style="background:${c.color}"></span>
+      <span style="flex:1">${esc(c.label)}</span>
+      <span class="cat-count">${state.tasks.filter(t=>t.cat===c.id).length}</span>
+    </button>`).join('');
+
+  // Reminders
+  const now = new Date();
+  const upcoming = state.tasks
+    .filter(t=>t.reminder && new Date(t.reminder)>now && t.status!=='done')
+    .sort((a,b)=>new Date(a.reminder)-new Date(b.reminder))
+    .slice(0,4);
+  const rl = document.getElementById('sidebar-reminders');
+  if(upcoming.length===0) {
+    rl.innerHTML = '<div style="font-size:12px;color:var(--text3)">No upcoming reminders</div>';
+  } else {
+    rl.innerHTML = upcoming.map(t=>`
+      <div class="reminder-item">
+        <i class="ti ti-bell"></i>
+        <div style="flex:1;min-width:0">
+          <div style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(t.title)}</div>
+          <div style="font-size:10px;color:var(--text3);font-family:'DM Mono',monospace">${fmtDateTime(t.reminder)}</div>
+        </div>
+      </div>`).join('');
+  }
+}
+
+function renderTopNav() {
+  const views = ['dashboard','kanban','calendar','special'];
+  document.querySelectorAll('.nav-item').forEach(el=>{
+    const txt = el.textContent.trim().toLowerCase();
+    const isView = views.some(v=>txt.includes(v)||txt.includes({'dashboard':'dashboard','kanban':'board','calendar':'calendar','special':'special'}[v]||v));
+  });
+  document.querySelectorAll('.view-tab').forEach(btn=>{
+    btn.classList.remove('active');
+  });
+  const tabs = document.querySelectorAll('.view-tab');
+  const idx = ['dashboard','kanban','calendar','special'].indexOf(state.view);
+  if(tabs[idx]) tabs[idx].classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(btn=>{
+    btn.classList.remove('active');
+  });
+}
+
+function switchView(v) {
+  state.view = v;
+  render();
+}
+
+function filterCat(catId) {
+  state._filterCat = state._filterCat===catId ? null : catId;
+  render();
+}
+
+function filteredTasks() {
+  if(state._filterCat) return state.tasks.filter(t=>t.cat===state._filterCat);
+  return state.tasks;
+}
+
+// ── Dashboard ────────────────────────────────────────────────────
+function renderDashboard() {
+  const tasks = filteredTasks();
+  const done = tasks.filter(t=>t.status==='done').length;
+  const prog = tasks.filter(t=>t.status==='inprogress').length;
+  const todo = tasks.filter(t=>t.status==='todo').length;
+  const pct = tasks.length ? Math.round(done/tasks.length*100) : 0;
+  return `
+    <div class="stats-row">
+      <div class="stat-card"><div class="stat-num">${tasks.length}</div><div class="stat-label">Total tasks</div></div>
+      <div class="stat-card green"><div class="stat-num">${done}</div><div class="stat-label">Completed</div></div>
+      <div class="stat-card purple"><div class="stat-num">${prog}</div><div class="stat-label">In progress</div></div>
+      <div class="stat-card amber"><div class="stat-num">${todo}</div><div class="stat-label">To do</div></div>
+    </div>
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px 16px;margin-bottom:20px">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+        <span style="font-size:12px;color:var(--text3);text-transform:uppercase;letter-spacing:.5px">Overall progress</span>
+        <span style="font-family:'DM Mono',monospace;font-size:13px;color:var(--purple)">${pct}%</span>
+      </div>
+      <div class="progress-bar" style="height:5px"><div class="progress-fill" style="width:${pct}%"></div></div>
+    </div>
+    <div class="section-header">
+      <div class="section-title">All tasks ${state._filterCat?'— '+getCat(state._filterCat).label:''}</div>
+      ${state._filterCat?`<button class="inline-add" onclick="state._filterCat=null;render()"><i class="ti ti-x" style="font-size:11px"></i> Clear filter</button>`:''}
+    </div>
+    ${tasks.length ? tasks.map(renderTaskCard).join('') : '<div class="empty"><i class="ti ti-clipboard-list"></i>No tasks yet — add one above!</div>'}
+  `;
+}
+
+// ── Task Card ────────────────────────────────────────────────────
+function renderTaskCard(t) {
+  return `
+    <div class="task-card" onclick="openEditTask(${t.id})">
+      <div class="task-top">
+        <div class="task-check ${t.status==='done'?'done':''}" onclick="toggleDone(event,${t.id})">
+          ${t.status==='done'?'<i class="ti ti-check"></i>':''}
+        </div>
+        <div style="flex:1">
+          <div class="task-title ${t.status==='done'?'done':''}">${esc(t.title)}</div>
+          <div class="task-meta">
+            <span class="tag ${tagClass(t.cat)}">${esc(getCat(t.cat).label)}</span>
+            <span class="status-badge ${t.status}">${t.status==='inprogress'?'In progress':t.status==='done'?'Done':'To do'}</span>
+            ${t.date?`<span class="task-date"><i class="ti ti-calendar" style="font-size:11px"></i>${fmtDate(t.date)}</span>`:''}
+            ${t.reminder?`<span class="task-date"><i class="ti ti-bell" style="font-size:11px"></i>${fmtDateTime(t.reminder)}</span>`:''}
+          </div>
+          ${t.note?`<div class="task-note">${esc(t.note)}</div>`:''}
+        </div>
+        <div style="display:flex;align-items:center;gap:4px">
+          <span style="font-size:11px;font-family:'DM Mono',monospace;color:var(--text3)">${t.progress}%</span>
+          <button class="delete-btn" onclick="deleteTask(event,${t.id})"><i class="ti ti-trash"></i></button>
+        </div>
+      </div>
+      <div class="progress-bar" style="margin-top:8px"><div class="progress-fill" style="width:${t.progress}%"></div></div>
+    </div>`;
+}
+
+// ── Kanban ───────────────────────────────────────────────────────
+function renderKanban() {
+  const tasks = filteredTasks();
+  const cols = [{key:'todo',label:'To do'},{key:'inprogress',label:'In progress'},{key:'done',label:'Done'}];
+  return `<div class="kanban">${cols.map(col=>{
+    const ct = tasks.filter(t=>t.status===col.key);
+    return `<div class="kanban-col">
+      <div class="col-header">
+        <span class="col-title">${col.label}</span>
+        <span class="col-count">${ct.length}</span>
+      </div>
+      ${ct.length ? ct.map(renderTaskCard).join('') : '<div class="empty" style="padding:30px 10px"><i class="ti ti-inbox" style="font-size:24px;margin-bottom:6px;opacity:.2;display:block"></i>Empty</div>'}
+    </div>`;
+  }).join('')}</div>`;
+}
+
+// ── Calendar ─────────────────────────────────────────────────────
+function renderCalendar() {
+  const y = state.calYear, m = state.calMonth;
+  const now = new Date();
+  const monthName = new Date(y,m,1).toLocaleDateString('en-GB',{month:'long',year:'numeric'});
+  const firstDay = new Date(y,m,1).getDay();
+  const daysInMonth = new Date(y,m+1,0).getDate();
+  const prevDays = new Date(y,m,0).getDate();
+  const days = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+
+  let cells = days.map(d=>`<div class="cal-day-name">${d}</div>`).join('');
+
+  // Prev month filler
+  for(let i=0;i<firstDay;i++){
+    const d = prevDays - firstDay + 1 + i;
+    cells += `<div class="cal-cell other-month"><div class="cal-num">${d}</div></div>`;
+  }
+
+  for(let d=1;d<=daysInMonth;d++){
+    const dateStr = `${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const dayTasks = state.tasks.filter(t=>t.date===dateStr);
+    const isToday = d===now.getDate() && m===now.getMonth() && y===now.getFullYear();
+    const pips = dayTasks.slice(0,3).map(t=>`<div class="cal-pip" style="background:${getCat(t.cat).color}"></div>`).join('');
+    cells += `<div class="cal-cell ${isToday?'today':''} ${dayTasks.length?'has-task':''}" onclick="calClick('${dateStr}')">
+      <div class="cal-num">${d}</div>${pips}
+      ${dayTasks.length>3?`<div style="font-size:9px;color:var(--text3)">+${dayTasks.length-3}</div>`:''}
+    </div>`;
+  }
+
+  // Monthly task list
+  const monthStr = `${y}-${String(m+1).padStart(2,'0')}`;
+  const monthTasks = state.tasks.filter(t=>t.date&&t.date.startsWith(monthStr));
+
+  return `
+    <div class="cal-nav">
+      <div style="font-size:15px;font-weight:500">${monthName}</div>
+      <div style="display:flex;gap:6px">
+        <button class="cal-nav-btn" onclick="calPrev()"><i class="ti ti-chevron-left"></i></button>
+        <button class="cal-nav-btn" onclick="calToday()">Today</button>
+        <button class="cal-nav-btn" onclick="calNext()"><i class="ti ti-chevron-right"></i></button>
+      </div>
+    </div>
+    <div class="cal-grid" style="margin-bottom:20px">${cells}</div>
+    <div class="section-header"><div class="section-title">Tasks this month</div></div>
+    ${monthTasks.length ? monthTasks.map(renderTaskCard).join('') : '<div class="empty"><i class="ti ti-calendar-off"></i>No tasks this month</div>'}
+  `;
+}
+
+function calPrev() { state.calMonth--; if(state.calMonth<0){state.calMonth=11;state.calYear--;} render(); }
+function calNext() { state.calMonth++; if(state.calMonth>11){state.calMonth=0;state.calYear++;} render(); }
+function calToday() { state.calYear=new Date().getFullYear(); state.calMonth=new Date().getMonth(); render(); }
+function calClick(dateStr) {
+  const dayTasks = state.tasks.filter(t=>t.date===dateStr);
+  if(dayTasks.length) openEditTask(dayTasks[0].id);
+  else openAddTask(dateStr);
+}
+
+// ── Special ──────────────────────────────────────────────────────
+function renderSpecial() {
+  return `
+    <div class="section-header">
+      <div class="section-title">Special tasks</div>
+      <button class="inline-add" onclick="openAddSpecial()"><i class="ti ti-plus" style="font-size:11px"></i> New special task</button>
+    </div>
+    ${state.specialTasks.length ? state.specialTasks.map(s=>{
+      const done = s.steps.filter(st=>st.done).length;
+      const pct = s.steps.length ? Math.round(done/s.steps.length*100) : 0;
+      return `<div class="special-card">
+        <div class="special-header">
+          <div>
+            <div class="special-title">${esc(s.title)}</div>
+            <div style="display:flex;align-items:center;gap:8px;margin-top:4px">
+              <span class="tag ${tagClass(s.cat)}">${esc(getCat(s.cat).label)}</span>
+              ${s.deadline?`<span class="task-date"><i class="ti ti-calendar" style="font-size:11px"></i>${fmtDate(s.deadline)}</span>`:''}
+              <span style="font-family:'DM Mono',monospace;font-size:11px;color:var(--purple)">${pct}%</span>
+            </div>
+          </div>
+          <button class="delete-btn" onclick="deleteSpecial('${s.id}')"><i class="ti ti-trash"></i></button>
+        </div>
+        <div class="progress-bar" style="height:4px;margin-bottom:12px"><div class="progress-fill" style="width:${pct}%"></div></div>
+        ${s.steps.map((st,i)=>`
+          <div class="step-row ${st.done?'done-step':''}" onclick="toggleStep('${s.id}',${i})">
+            <div class="step-check ${st.done?'done':''}">
+              ${st.done?'<i class="ti ti-check"></i>':''}
+            </div>
+            ${esc(st.label)}
+          </div>`).join('')}
+        ${s.steps.length===0?'<div style="color:var(--text3);font-size:12px;padding:8px 0">No steps added</div>':''}
+      </div>`;
+    }).join('') : '<div class="empty"><i class="ti ti-star-off"></i>No special tasks yet</div>'}
+  `;
+}
+
+// ── Actions ──────────────────────────────────────────────────────
+function toggleDone(e, id) {
+  e.stopPropagation();
+  const t = state.tasks.find(t=>t.id===id);
+  if(!t) return;
+  t.status = t.status==='done' ? 'inprogress' : 'done';
+  if(t.status==='done') { t.progress=100; showToast(`"${t.title}" completed!`); }
+  render();
+}
+
+function deleteTask(e, id) {
+  e.stopPropagation();
+  if(!confirm('Delete this task?')) return;
+  state.tasks = state.tasks.filter(t=>t.id!==id);
+  render();
+}
+
+function deleteSpecial(id) {
+  if(!confirm('Delete this special task?')) return;
+  state.specialTasks = state.specialTasks.filter(s=>s.id!==id);
+  render();
+}
+
+function toggleStep(spId, i) {
+  const s = state.specialTasks.find(s=>s.id===spId);
+  if(s) { s.steps[i].done = !s.steps[i].done; render(); }
+}
+
+// ── Modals ───────────────────────────────────────────────────────
+function openModal(html) {
+  const r = document.getElementById('modal-root');
+  r.innerHTML = `<div class="overlay" onclick="if(event.target===this)closeModal()">${html}</div>`;
+  requestNotif();
+}
+function closeModal() { document.getElementById('modal-root').innerHTML=''; }
+
+function catOptions(selected) {
+  return state.categories.map(c=>`<option value="${c.id}" ${c.id===selected?'selected':''}>${esc(c.label)}</option>`).join('');
+}
+
+function openAddTask(prefillDate) {
+  openModal(`<div class="modal">
+    <div class="modal-title"><i class="ti ti-plus"></i> New task</div>
+    <div class="form-group"><label class="form-label">Title</label><input class="form-input" id="f-title" placeholder="Task title" autofocus></div>
+    <div class="form-group"><label class="form-label">Category</label><select class="form-select" id="f-cat">${catOptions('radio')}</select></div>
+    <div class="form-group"><label class="form-label">Status</label>
+      <select class="form-select" id="f-status">
+        <option value="todo">To do</option><option value="inprogress">In progress</option><option value="done">Done</option>
+      </select>
+    </div>
+    <div class="form-group"><label class="form-label">Date</label><input class="form-input" type="date" id="f-date" value="${prefillDate||''}"></div>
+    <div class="form-group"><label class="form-label">Reminder</label><input class="form-input" type="datetime-local" id="f-reminder"></div>
+    <div class="form-group"><label class="form-label">Progress</label>
+      <div class="range-row">
+        <input class="form-range" type="range" min="0" max="100" value="0" id="f-progress" step="1" oninput="document.getElementById('f-prog-out').textContent=this.value+'%'">
+        <span class="range-val" id="f-prog-out">0%</span>
+      </div>
+    </div>
+    <div class="form-group"><label class="form-label">Note</label><textarea class="form-textarea" id="f-note" placeholder="Optional note"></textarea></div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="saveNewTask()">Add task</button>
+    </div>
+  </div>`);
+}
+
+function saveNewTask() {
+  const title = document.getElementById('f-title').value.trim();
+  if(!title) { showToast('Please enter a title'); return; }
+  const task = {
+    id: state.nextId++,
+    title,
+    cat: document.getElementById('f-cat').value,
+    status: document.getElementById('f-status').value,
+    date: document.getElementById('f-date').value,
+    reminder: document.getElementById('f-reminder').value,
+    note: document.getElementById('f-note').value.trim(),
+    progress: parseInt(document.getElementById('f-progress').value)||0,
+    steps: [],
+  };
+  if(task.status==='done') task.progress=100;
+  state.tasks.push(task);
+  scheduleReminder(task);
+  closeModal();
+  showToast(`"${title}" added!`);
+  render();
+}
+
+function openEditTask(id) {
+  const t = state.tasks.find(t=>t.id===id);
+  if(!t) return;
+  openModal(`<div class="modal">
+    <div class="modal-title"><i class="ti ti-edit"></i> Edit task</div>
+    <div class="form-group"><label class="form-label">Title</label><input class="form-input" id="f-title" value="${esc(t.title)}"></div>
+    <div class="form-group"><label class="form-label">Category</label><select class="form-select" id="f-cat">${catOptions(t.cat)}</select></div>
+    <div class="form-group"><label class="form-label">Status</label>
+      <select class="form-select" id="f-status">
+        <option value="todo" ${t.status==='todo'?'selected':''}>To do</option>
+        <option value="inprogress" ${t.status==='inprogress'?'selected':''}>In progress</option>
+        <option value="done" ${t.status==='done'?'selected':''}>Done</option>
+      </select>
+    </div>
+    <div class="form-group"><label class="form-label">Date</label><input class="form-input" type="date" id="f-date" value="${t.date}"></div>
+    <div class="form-group"><label class="form-label">Reminder</label><input class="form-input" type="datetime-local" id="f-reminder" value="${t.reminder}"></div>
+    <div class="form-group"><label class="form-label">Progress</label>
+      <div class="range-row">
+        <input class="form-range" type="range" min="0" max="100" value="${t.progress}" id="f-progress" step="1" oninput="document.getElementById('f-prog-out').textContent=this.value+'%'">
+        <span class="range-val" id="f-prog-out">${t.progress}%</span>
+      </div>
+    </div>
+    <div class="form-group"><label class="form-label">Note</label><textarea class="form-textarea" id="f-note">${esc(t.note)}</textarea></div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="saveEditTask(${t.id})">Save</button>
+    </div>
+  </div>`);
+}
+
+function saveEditTask(id) {
+  const t = state.tasks.find(t=>t.id===id);
+  if(!t) return;
+  t.title = document.getElementById('f-title').value.trim()||t.title;
+  t.cat = document.getElementById('f-cat').value;
+  t.status = document.getElementById('f-status').value;
+  t.date = document.getElementById('f-date').value;
+  t.reminder = document.getElementById('f-reminder').value;
+  t.note = document.getElementById('f-note').value.trim();
+  t.progress = parseInt(document.getElementById('f-progress').value)||0;
+  if(t.status==='done') t.progress=100;
+  scheduleReminder(t);
+  closeModal();
+  render();
+}
+
+function openAddCat() {
+  openModal(`<div class="modal">
+    <div class="modal-title"><i class="ti ti-tag"></i> New category</div>
+    <div class="form-group"><label class="form-label">Name</label><input class="form-input" id="f-name" placeholder="Category name" autofocus></div>
+    <div class="form-group"><label class="form-label">Color</label><input type="color" id="f-color" value="#9580ff" style="width:50px;height:36px;border:1px solid var(--border);border-radius:var(--radius-sm);background:none;cursor:pointer;padding:2px"></div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="saveNewCat()">Add</button>
+    </div>
+  </div>`);
+}
+
+function saveNewCat() {
+  const name = document.getElementById('f-name').value.trim();
+  if(!name) { showToast('Enter a category name'); return; }
+  const id = name.toLowerCase().replace(/\s+/g,'-').replace(/[^a-z0-9-]/g,'');
+  state.categories.push({id, label:name, color:document.getElementById('f-color').value});
+  closeModal();
+  render();
+}
+
+function openAddSpecial() {
+  openModal(`<div class="modal">
+    <div class="modal-title"><i class="ti ti-star"></i> New special task</div>
+    <div class="form-group"><label class="form-label">Title</label><input class="form-input" id="f-title" placeholder="e.g. Grant Application" autofocus></div>
+    <div class="form-group"><label class="form-label">Category</label><select class="form-select" id="f-cat">${catOptions('application')}</select></div>
+    <div class="form-group"><label class="form-label">Deadline</label><input class="form-input" type="date" id="f-deadline"></div>
+    <div class="form-group"><label class="form-label">Steps (one per line)</label>
+      <textarea class="form-textarea" id="f-steps" placeholder="Draft proposal&#10;Gather documents&#10;Submit online" style="min-height:90px"></textarea>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="saveNewSpecial()">Add</button>
+    </div>
+  </div>`);
+}
+
+function saveNewSpecial() {
+  const title = document.getElementById('f-title').value.trim();
+  if(!title) { showToast('Enter a title'); return; }
+  const raw = document.getElementById('f-steps').value.trim();
+  const steps = raw ? raw.split('\n').map(s=>s.trim()).filter(Boolean).map(s=>({label:s,done:false})) : [];
+  state.specialTasks.push({
+    id: 'sp'+state.nextSpId++,
+    title,
+    cat: document.getElementById('f-cat').value,
+    deadline: document.getElementById('f-deadline').value,
+    steps,
+  });
+  closeModal();
+  render();
+}
+
+// ── Init ─────────────────────────────────────────────────────────
+state.tasks.forEach(scheduleReminder);
+render();
+</script>
+</body>
+</html>
