@@ -302,6 +302,80 @@ textarea{resize:vertical;line-height:1.6}
 .view-tab{padding:10px 16px;font-size:13px;color:var(--text2);cursor:pointer;border-bottom:2px solid transparent;transition:all .15s;margin-bottom:-1px}
 .view-tab:hover{color:var(--text)}
 .view-tab.active{color:var(--accent);border-bottom-color:var(--accent)}
+
+/* ═══ AI CHAT SIDEBAR ═══ */
+#ai-chat-panel{
+  position:fixed;right:0;top:0;bottom:0;width:380px;
+  background:var(--bg2);border-left:1px solid var(--border2);
+  display:flex;flex-direction:column;z-index:900;
+  transform:translateX(100%);transition:transform .3s cubic-bezier(.4,0,.2,1);
+  box-shadow:-8px 0 32px rgba(0,0,0,.4);
+}
+#ai-chat-panel.open{transform:translateX(0)}
+.ai-chat-header{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px}
+.ai-chat-title{font-size:14px;font-weight:500;color:var(--text);flex:1}
+.ai-chat-subtitle{font-size:11px;color:var(--text3);margin-top:1px}
+.ai-chat-close{color:var(--text3);font-size:20px;cursor:pointer;padding:4px;line-height:1}
+.ai-chat-close:hover{color:var(--text)}
+.ai-chat-messages{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:12px}
+.ai-msg{max-width:90%;padding:10px 14px;border-radius:var(--radius-lg);font-size:13px;line-height:1.6}
+.ai-msg.user{background:var(--accent-bg);border:1px solid rgba(124,111,255,.2);color:var(--text);align-self:flex-end;border-bottom-right-radius:4px}
+.ai-msg.assistant{background:var(--bg4);border:1px solid var(--border);color:var(--text2);align-self:flex-start;border-bottom-left-radius:4px}
+.ai-msg.assistant pre{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);padding:8px;margin:8px 0;overflow-x:auto;font-family:'DM Mono',monospace;font-size:11px}
+.ai-msg.assistant ul,
+.ai-msg.assistant ol{padding-left:16px;margin:6px 0}
+.ai-msg.assistant li{margin:3px 0}
+.ai-msg.assistant strong{color:var(--text);font-weight:500}
+.ai-typing{display:flex;align-items:center;gap:6px;padding:10px 14px;background:var(--bg4);border:1px solid var(--border);border-radius:var(--radius-lg);width:fit-content;align-self:flex-start}
+.ai-typing span{width:6px;height:6px;border-radius:50%;background:var(--accent);animation:typingBounce 1.2s infinite}
+.ai-typing span:nth-child(2){animation-delay:.2s}
+.ai-typing span:nth-child(3){animation-delay:.4s}
+@keyframes typingBounce{0%,60%,100%{transform:translateY(0);opacity:.4}30%{transform:translateY(-4px);opacity:1}}
+.ai-chat-input-area{padding:12px 16px;border-top:1px solid var(--border);display:flex;gap:8px;align-items:flex-end}
+.ai-chat-input{flex:1;border-radius:var(--radius-lg);padding:10px 14px;min-height:40px;max-height:120px;font-size:13px;line-height:1.5;resize:none}
+.ai-chat-send{background:var(--accent);color:#fff;border-radius:var(--radius);padding:8px 12px;font-size:14px;flex-shrink:0;transition:background .15s}
+.ai-chat-send:hover{background:var(--accent2)}
+.ai-chat-send:disabled{opacity:.4;cursor:not-allowed}
+
+/* AI chat toggle button */
+#ai-chat-toggle{
+  position:fixed;bottom:80px;right:24px;z-index:800;
+  width:48px;height:48px;border-radius:50%;
+  background:var(--bg3);border:1px solid var(--border2);
+  display:flex;align-items:center;justify-content:center;
+  font-size:20px;cursor:pointer;
+  box-shadow:0 4px 16px rgba(0,0,0,.4);
+  transition:all .2s;
+}
+#ai-chat-toggle:hover{background:var(--bg4);border-color:var(--accent);transform:scale(1.05)}
+#ai-chat-toggle .ai-unread-dot{
+  position:absolute;top:4px;right:4px;
+  width:10px;height:10px;border-radius:50%;
+  background:var(--accent);border:2px solid var(--bg3);
+  animation:pulseDot 2s infinite;display:none;
+}
+@keyframes pulseDot{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.6;transform:scale(1.3)}}
+
+/* AI ASSIST in log */
+.ai-assist-result{background:var(--bg4);border:1px solid rgba(124,111,255,.3);border-radius:var(--radius-lg);padding:14px;margin-top:12px}
+.ai-assist-label{font-size:11px;text-transform:uppercase;letter-spacing:.6px;color:var(--accent);margin-bottom:8px;font-weight:500}
+.ai-assist-text{font-size:13px;color:var(--text2);line-height:1.7;white-space:pre-wrap}
+.ai-assist-actions{display:flex;gap:8px;margin-top:10px}
+
+/* Digest card */
+.digest-card{background:var(--bg4);border:1px solid rgba(124,111,255,.25);border-radius:var(--radius-lg);padding:20px;margin-top:16px}
+.digest-section{margin-bottom:16px}
+.digest-section:last-child{margin-bottom:0}
+.digest-section-title{font-size:12px;text-transform:uppercase;letter-spacing:.6px;color:var(--accent);font-weight:500;margin-bottom:8px}
+.digest-content{font-size:13px;color:var(--text2);line-height:1.7;white-space:pre-wrap}
+
+/* Smart suggestions widget */
+.suggestion-item{background:var(--bg4);border:1px solid var(--border);border-radius:var(--radius);padding:12px;margin-bottom:8px;cursor:pointer;transition:all .15s}
+.suggestion-item:hover{border-color:var(--accent);background:var(--accent-bg)}
+.suggestion-item:last-child{margin-bottom:0}
+.suggestion-task{font-size:13px;font-weight:500;color:var(--text);margin-bottom:4px}
+.suggestion-reason{font-size:12px;color:var(--text3);line-height:1.5}
+.suggestion-loading{display:flex;align-items:center;gap:8px;padding:12px;color:var(--text3);font-size:13px}
 </style>
 </head>
 <body>
@@ -369,7 +443,6 @@ textarea{resize:vertical;line-height:1.6}
     <div class="view-tab" onclick="switchView('analytics',null,this)">Analytics</div>
   </div>
   <div class="content" id="content-area">
-    <!-- Views injected by JS -->
     <div class="view active" id="view-dashboard"></div>
     <div class="view" id="view-tasks"></div>
     <div class="view" id="view-board"></div>
@@ -378,6 +451,30 @@ textarea{resize:vertical;line-height:1.6}
     <div class="view" id="view-applications"></div>
     <div class="view" id="view-resources"></div>
     <div class="view" id="view-analytics"></div>
+  </div>
+</div>
+
+<!-- ═══ AI CHAT TOGGLE BUTTON ═══ -->
+<div id="ai-chat-toggle" onclick="toggleAIChat()" title="AI Assistant">
+  🤖
+  <div class="ai-unread-dot" id="ai-unread-dot"></div>
+</div>
+
+<!-- ═══ AI CHAT PANEL ═══ -->
+<div id="ai-chat-panel">
+  <div class="ai-chat-header">
+    <div>
+      <div class="ai-chat-title">✨ AI Assistant</div>
+      <div class="ai-chat-subtitle">Ask anything about your workspace</div>
+    </div>
+    <div class="ai-chat-close" onclick="toggleAIChat()">×</div>
+  </div>
+  <div class="ai-chat-messages" id="ai-chat-messages">
+    <div class="ai-msg assistant">👋 Hi! I have full context of your workspace — tasks, logs, applications, and resources. Ask me anything like:<br><br>• "What did I work on this week?"<br>• "Which deadline is most urgent?"<br>• "What should I focus on today?"<br>• "Summarize my research logs"</div>
+  </div>
+  <div class="ai-chat-input-area">
+    <textarea class="ai-chat-input" id="ai-chat-input" placeholder="Ask me anything..." rows="1" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendAIMessage()}"></textarea>
+    <button class="ai-chat-send" id="ai-chat-send-btn" onclick="sendAIMessage()">↑</button>
   </div>
 </div>
 
@@ -599,7 +696,12 @@ textarea{resize:vertical;line-height:1.6}
       </div>
       <div class="form-row">
         <label class="form-label">Entry</label>
+        <div style="display:flex;gap:6px;margin-bottom:6px">
+          <button class="btn btn-ghost btn-sm" id="ai-assist-btn" onclick="aiAssistLog()" style="gap:4px">✨ Assist</button>
+          <button class="btn btn-ghost btn-sm" id="ai-summarize-btn" onclick="aiSummarizeLogs()" style="gap:4px">📋 Summarize task logs</button>
+        </div>
         <textarea id="log-text" style="min-height:120px" placeholder="What did you work on? Findings, progress, blockers, next steps..."></textarea>
+        <div id="ai-assist-result-area"></div>
       </div>
     </div>
     <div class="modal-footer">
@@ -652,6 +754,440 @@ function fmtDatetime(d){
 function today(){ return new Date().toISOString().split('T')[0]; }
 
 // ═══════════════════════════════
+// AI UTILITIES
+// ═══════════════════════════════
+function buildWorkspaceContext(){
+  const doneTasks = state.tasks.filter(t=>t.status==='done');
+  const pendingTasks = state.tasks.filter(t=>t.status!=='done');
+  const recentLogs = state.logs.slice(-20);
+  const now = new Date();
+  
+  return `You are an AI assistant embedded in a personal productivity workspace app called "Workspace OS" used by a student at Politechnika Wrocławska (Wrocław University of Technology) in Poland. The user lives at the T17 Dormitory.
+
+CURRENT DATE/TIME: ${now.toLocaleString('en',{weekday:'long',year:'numeric',month:'long',day:'numeric',hour:'2-digit',minute:'2-digit'})}
+
+=== TASKS ===
+Pending tasks (${pendingTasks.length}):
+${pendingTasks.map(t=>`- [${t.status}] "${t.name}" | Category: ${getCat(t.category).name} | Due: ${t.date||'no date'} | Progress: ${t.progress||0}% | Notes: ${(t.notes||'').slice(0,100)}`).join('\n')||'None'}
+
+Completed tasks (${doneTasks.length} total):
+${doneTasks.slice(-10).map(t=>`- "${t.name}" | Category: ${getCat(t.category).name}`).join('\n')||'None'}
+
+=== WORK LOG (last 20 entries) ===
+${recentLogs.map(l=>{
+  const task = state.tasks.find(t=>t.id===l.taskId)||{name:'General'};
+  return `[${fmtDatetime(l.created)}] Task: "${task.name}"\n${l.text}`;
+}).join('\n---\n')||'No log entries yet'}
+
+=== APPLICATIONS & FELLOWSHIPS ===
+${state.applications.map(a=>`- ${a.org} (${a.type}) | Deadline: ${a.deadline?fmtDatetime(a.deadline):'none'} | Stage: ${STAGES[a.stage]||'?'} | Priority: ${a.priority}`).join('\n')||'None tracked'}
+
+=== RESOURCES ===
+${state.resources.map(r=>`- "${r.title}" (${r.type}) | Tags: ${(r.tags||[]).join(', ')}`).join('\n')||'None saved'}
+
+=== PRODUCTIVITY ===
+Weekly completions per day: ${['Sun','Mon','Tue','Wed','Thu','Fri','Sat'].map((d,i)=>d+':'+state.productivity.weekly[i]).join(', ')}
+Total completed: ${state.productivity.totalCompleted||0}
+Streak: ${state.productivity.streak||0} days
+
+Please be concise, helpful, and personal. You know this user well. Format responses with markdown where helpful.`;
+}
+
+async function callClaude(messages, systemPrompt, onChunk){
+  const body = {
+    model: 'claude-sonnet-4-20250514',
+    max_tokens: 1000,
+    system: systemPrompt || buildWorkspaceContext(),
+    messages: messages,
+    stream: !!onChunk
+  };
+  
+  if(onChunk){
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify(body)
+    });
+    if(!res.ok) throw new Error('API error: '+res.status);
+    const reader = res.body.getReader();
+    const decoder = new TextDecoder();
+    let fullText = '';
+    while(true){
+      const {done, value} = await reader.read();
+      if(done) break;
+      const chunk = decoder.decode(value);
+      const lines = chunk.split('\n');
+      for(const line of lines){
+        if(line.startsWith('data: ')){
+          const data = line.slice(6);
+          if(data==='[DONE]') break;
+          try{
+            const parsed = JSON.parse(data);
+            if(parsed.type==='content_block_delta' && parsed.delta?.text){
+              fullText += parsed.delta.text;
+              onChunk(parsed.delta.text, fullText);
+            }
+          }catch(e){}
+        }
+      }
+    }
+    return fullText;
+  } else {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify(body)
+    });
+    if(!res.ok) throw new Error('API error: '+res.status);
+    const data = await res.json();
+    return data.content?.[0]?.text || '';
+  }
+}
+
+function markdownToHtml(text){
+  return text
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>')
+    .replace(/\*(.*?)\*/g,'<em>$1</em>')
+    .replace(/`([^`]+)`/g,'<code style="background:var(--bg3);padding:1px 5px;border-radius:3px;font-family:DM Mono,monospace;font-size:12px">$1</code>')
+    .replace(/^### (.*$)/gm,'<div style="font-weight:600;color:var(--text);margin:8px 0 4px">$1</div>')
+    .replace(/^## (.*$)/gm,'<div style="font-weight:600;color:var(--text);font-size:14px;margin:10px 0 4px">$1</div>')
+    .replace(/^# (.*$)/gm,'<div style="font-weight:600;color:var(--text);font-size:15px;margin:10px 0 4px">$1</div>')
+    .replace(/^\* (.*$)/gm,'<div style="padding-left:12px;margin:2px 0">• $1</div>')
+    .replace(/^- (.*$)/gm,'<div style="padding-left:12px;margin:2px 0">• $1</div>')
+    .replace(/^\d+\. (.*$)/gm,'<div style="padding-left:12px;margin:2px 0">$1</div>')
+    .replace(/\n/g,'<br>');
+}
+
+// ═══════════════════════════════
+// AI CHAT SIDEBAR
+// ═══════════════════════════════
+let aiChatOpen = false;
+let aiChatHistory = [];
+let aiHasUnread = false;
+
+function toggleAIChat(){
+  aiChatOpen = !aiChatOpen;
+  document.getElementById('ai-chat-panel').classList.toggle('open', aiChatOpen);
+  if(aiChatOpen){
+    aiHasUnread = false;
+    document.getElementById('ai-unread-dot').style.display = 'none';
+    setTimeout(()=>document.getElementById('ai-chat-input').focus(), 300);
+  }
+}
+
+async function sendAIMessage(){
+  const input = document.getElementById('ai-chat-input');
+  const text = input.value.trim();
+  if(!text) return;
+  
+  input.value = '';
+  input.style.height = 'auto';
+  
+  // Add user message to UI
+  addChatMessage('user', text);
+  
+  // Add to history
+  aiChatHistory.push({role:'user', content:text});
+  if(aiChatHistory.length > 12) aiChatHistory = aiChatHistory.slice(-12); // keep last 6 exchanges
+  
+  // Show typing indicator
+  const typingEl = showTypingIndicator();
+  const sendBtn = document.getElementById('ai-chat-send-btn');
+  sendBtn.disabled = true;
+  
+  try {
+    const msgEl = addChatMessage('assistant', '');
+    typingEl.remove();
+    
+    let fullText = '';
+    await callClaude(
+      aiChatHistory.slice(0,-1).concat([{role:'user',content:text}]),
+      buildWorkspaceContext(),
+      (chunk, total) => {
+        fullText = total;
+        msgEl.innerHTML = markdownToHtml(total);
+        scrollChatToBottom();
+      }
+    );
+    
+    // Add assistant response to history
+    aiChatHistory.push({role:'assistant', content:fullText});
+    if(aiChatHistory.length > 12) aiChatHistory = aiChatHistory.slice(-12);
+    
+    if(!aiChatOpen){
+      aiHasUnread = true;
+      document.getElementById('ai-unread-dot').style.display = 'block';
+    }
+  } catch(e){
+    typingEl.remove();
+    addChatMessage('assistant', '⚠️ Sorry, I couldn\'t reach the AI. Please try again.');
+    console.error('AI error:', e);
+  }
+  
+  sendBtn.disabled = false;
+}
+
+function addChatMessage(role, text){
+  const container = document.getElementById('ai-chat-messages');
+  const el = document.createElement('div');
+  el.className = 'ai-msg ' + role;
+  if(text) el.innerHTML = role === 'assistant' ? markdownToHtml(text) : escapeHtml(text);
+  container.appendChild(el);
+  scrollChatToBottom();
+  return el;
+}
+
+function showTypingIndicator(){
+  const container = document.getElementById('ai-chat-messages');
+  const el = document.createElement('div');
+  el.className = 'ai-typing';
+  el.innerHTML = '<span></span><span></span><span></span>';
+  container.appendChild(el);
+  scrollChatToBottom();
+  return el;
+}
+
+function scrollChatToBottom(){
+  const c = document.getElementById('ai-chat-messages');
+  c.scrollTop = c.scrollHeight;
+}
+
+function escapeHtml(t){
+  return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>');
+}
+
+// Auto-resize chat input
+document.addEventListener('DOMContentLoaded', ()=>{
+  const input = document.getElementById('ai-chat-input');
+  if(input) input.addEventListener('input', function(){
+    this.style.height='auto';
+    this.style.height=Math.min(this.scrollHeight,120)+'px';
+  });
+});
+
+// ═══════════════════════════════
+// WEEKLY DIGEST (Analytics view)
+// ═══════════════════════════════
+async function generateWeeklyDigest(){
+  const btn = document.getElementById('digest-btn');
+  if(!btn) return;
+  btn.disabled = true;
+  btn.textContent = '⏳ Generating...';
+  
+  const sevenDaysAgo = new Date(Date.now() - 7*86400000).toISOString();
+  const recentLogs = state.logs.filter(l=>l.created >= sevenDaysAgo);
+  const completedTasks = state.tasks.filter(t=>t.status==='done' && t.created >= sevenDaysAgo);
+  const score = state.productivity.weekly.reduce((a,b)=>a+b,0);
+  
+  const prompt = `Generate a structured weekly digest for this productivity workspace. Format with clear sections.
+
+WEEK DATA:
+- Completed tasks this week: ${completedTasks.map(t=>t.name).join(', ')||'none'}
+- Work log entries (${recentLogs.length}):
+${recentLogs.map(l=>{
+  const task = state.tasks.find(t=>t.id===l.taskId)||{name:'General'};
+  return `[${task.name}] ${l.text}`;
+}).join('\n')||'none'}
+- Weekly productivity score: ${score} points
+- All pending tasks: ${state.tasks.filter(t=>t.status!=='done').map(t=>t.name+' (due:'+t.date+')').join(', ')||'none'}
+
+Create a digest with these sections:
+1. **What Was Accomplished** - specific bullet list
+2. **Patterns & Observations** - 2-3 observations about working habits
+3. **Suggestions for Next Week** - 3 actionable recommendations
+4. **Upcoming Priorities** - what needs attention
+
+Be specific, personal, and actionable.`;
+
+  try {
+    const digestContainer = document.getElementById('digest-container');
+    if(!digestContainer) return;
+    digestContainer.innerHTML = '<div class="digest-card"><div style="color:var(--text3);font-size:13px">Generating your weekly digest...</div></div>';
+    
+    const result = await callClaude([{role:'user',content:prompt}], null, null);
+    
+    digestContainer.innerHTML = `<div class="digest-card">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+        <div style="font-size:14px;font-weight:500;color:var(--text)">📊 Weekly Digest</div>
+        <div style="display:flex;gap:8px">
+          <button class="btn btn-ghost btn-sm" onclick="saveDigestToLog()">Save to Log</button>
+          <button class="btn btn-ghost btn-sm" onclick="document.getElementById('digest-container').innerHTML=''">✕</button>
+        </div>
+      </div>
+      <div class="digest-content" id="digest-text">${markdownToHtml(result)}</div>
+    </div>`;
+    
+    // Store last digest text for saving
+    window._lastDigestText = result;
+    
+  } catch(e){
+    const digestContainer = document.getElementById('digest-container');
+    if(digestContainer) digestContainer.innerHTML = '<div style="color:var(--red);font-size:13px;padding:12px">Failed to generate digest. Please try again.</div>';
+    console.error('Digest error:', e);
+  }
+  
+  btn.disabled = false;
+  btn.textContent = '🔄 Regenerate Digest';
+}
+
+function saveDigestToLog(){
+  if(!window._lastDigestText) return;
+  const taskId = state.tasks[0]?.id;
+  if(!taskId){ notify('No tasks', 'Add a task first to save digest'); return; }
+  state.logs.push({
+    id: genId(),
+    taskId,
+    text: '📊 WEEKLY DIGEST\n\n'+window._lastDigestText,
+    created: new Date().toISOString()
+  });
+  saveState();
+  renderSidebar();
+  notify('Digest saved', 'Added to Work Log');
+}
+
+// ═══════════════════════════════
+// SMART TASK SUGGESTIONS (Dashboard)
+// ═══════════════════════════════
+async function loadSmartSuggestions(){
+  const container = document.getElementById('smart-suggestions-container');
+  if(!container) return;
+  
+  container.innerHTML = '<div class="suggestion-loading"><div class="ai-typing"><span></span><span></span><span></span></div> Thinking about your priorities...</div>';
+  
+  const now = new Date();
+  const pending = state.tasks.filter(t=>t.status!=='done');
+  
+  const prompt = `Based on the user's current workspace state, suggest 2-3 tasks they should focus on RIGHT NOW.
+
+Current time: ${now.toLocaleString('en',{weekday:'long',hour:'2-digit',minute:'2-digit'})}
+
+Pending tasks:
+${pending.map(t=>`- "${t.name}" | due: ${t.date||'no date'} | progress: ${t.progress||0}% | category: ${getCat(t.category).name}`).join('\n')||'No pending tasks'}
+
+Upcoming application deadlines:
+${state.applications.filter(a=>a.deadline&&new Date(a.deadline)>Date.now()).sort((a,b)=>new Date(a.deadline)-new Date(b.deadline)).slice(0,3).map(a=>`- ${a.org}: ${fmtDatetime(a.deadline)}`).join('\n')||'None'}
+
+Respond ONLY with a JSON array, no other text:
+[
+  {"taskId": "actual task id or null", "taskName": "task name", "reason": "one sentence why this is priority right now"},
+  ...
+]
+
+If taskId is null, it means it's a general recommendation (not a specific task).`;
+
+  try {
+    const result = await callClaude([{role:'user',content:prompt}], null, null);
+    let suggestions = [];
+    try {
+      const clean = result.replace(/```json|```/g,'').trim();
+      suggestions = JSON.parse(clean);
+    } catch(e){ suggestions = []; }
+    
+    if(!suggestions.length || !Array.isArray(suggestions)){
+      container.innerHTML = '<div style="color:var(--text3);font-size:13px;padding:8px">No suggestions available right now.</div>';
+      return;
+    }
+    
+    container.innerHTML = suggestions.slice(0,3).map((s,i)=>`
+      <div class="suggestion-item" onclick="${s.taskId?`openTaskModal('${s.taskId}')`:''}" ${!s.taskId?'style="cursor:default"':''}>
+        <div class="suggestion-task">${i===0?'🎯':i===1?'⚡':'💡'} ${escapeHtml(s.taskName||'')}</div>
+        <div class="suggestion-reason">${escapeHtml(s.reason||'')}</div>
+      </div>`).join('');
+  } catch(e){
+    container.innerHTML = '<div style="color:var(--text3);font-size:13px;padding:8px">Unable to load suggestions.</div>';
+    console.error('Suggestions error:', e);
+  }
+}
+
+// ═══════════════════════════════
+// AI WRITING ASSIST (Work Log)
+// ═══════════════════════════════
+async function aiAssistLog(){
+  const textArea = document.getElementById('log-text');
+  const text = textArea.value.trim();
+  if(!text){ notify('Empty entry', 'Write something first, then I can help improve it'); return; }
+  
+  const btn = document.getElementById('ai-assist-btn');
+  btn.disabled = true;
+  btn.textContent = '⏳ Improving...';
+  
+  const resultArea = document.getElementById('ai-assist-result-area');
+  resultArea.innerHTML = '<div class="ai-assist-result"><div class="ai-assist-label">✨ Improved version</div><div class="ai-assist-text" id="ai-assist-text">Thinking...</div></div>';
+  
+  try {
+    let improved = '';
+    await callClaude([{role:'user',content:`Improve this work log entry. Make it clear, structured, use bullet points where appropriate. Keep it concise and professional. Preserve all information.\n\nEntry:\n${text}`}], null, (chunk, total)=>{
+      improved = total;
+      const el = document.getElementById('ai-assist-text');
+      if(el) el.innerHTML = markdownToHtml(total);
+    });
+    
+    const resultArea2 = document.getElementById('ai-assist-result-area');
+    if(resultArea2) resultArea2.innerHTML = `<div class="ai-assist-result">
+      <div class="ai-assist-label">✨ Improved version</div>
+      <div class="ai-assist-text">${markdownToHtml(improved)}</div>
+      <div class="ai-assist-actions">
+        <button class="btn btn-primary btn-sm" onclick="acceptAIAssist(${JSON.stringify(improved).replace(/'/g,"&#39;")})">Accept</button>
+        <button class="btn btn-ghost btn-sm" onclick="document.getElementById('ai-assist-result-area').innerHTML=''">Discard</button>
+      </div>
+    </div>`;
+  } catch(e){
+    const resultArea2 = document.getElementById('ai-assist-result-area');
+    if(resultArea2) resultArea2.innerHTML = '<div style="color:var(--red);font-size:12px;padding:8px">Failed to improve. Try again.</div>';
+  }
+  
+  btn.disabled = false;
+  btn.textContent = '✨ Assist';
+}
+
+function acceptAIAssist(text){
+  document.getElementById('log-text').value = text;
+  document.getElementById('ai-assist-result-area').innerHTML = '';
+  notify('Applied', 'Log entry updated with improved version');
+}
+
+async function aiSummarizeLogs(){
+  const taskId = document.getElementById('log-task').value;
+  if(!taskId){ notify('Select a task', 'Choose a task to summarize its logs'); return; }
+  
+  const taskLogs = state.logs.filter(l=>l.taskId===taskId);
+  if(!taskLogs.length){ notify('No logs', 'No log entries for this task yet'); return; }
+  
+  const task = state.tasks.find(t=>t.id===taskId)||{name:'Unknown task'};
+  const btn = document.getElementById('ai-summarize-btn');
+  btn.disabled = true;
+  btn.textContent = '⏳ Summarizing...';
+  
+  const resultArea = document.getElementById('ai-assist-result-area');
+  resultArea.innerHTML = '<div class="ai-assist-result"><div class="ai-assist-label">📋 Summary</div><div class="ai-assist-text">Summarizing...</div></div>';
+  
+  try {
+    const logsText = taskLogs.map(l=>`[${fmtDatetime(l.created)}] ${l.text}`).join('\n\n---\n\n');
+    let summary = '';
+    await callClaude([{role:'user',content:`Summarize all these work log entries for the task "${task.name}" into one clear, concise paragraph that captures the key progress, findings, and current status.\n\nLogs:\n${logsText}`}], null, (chunk, total)=>{
+      summary = total;
+      const el = resultArea.querySelector('.ai-assist-text');
+      if(el) el.innerHTML = markdownToHtml(total);
+    });
+    
+    resultArea.innerHTML = `<div class="ai-assist-result">
+      <div class="ai-assist-label">📋 Summary of ${taskLogs.length} log entries</div>
+      <div class="ai-assist-text">${markdownToHtml(summary)}</div>
+      <div class="ai-assist-actions">
+        <button class="btn btn-primary btn-sm" onclick="acceptAIAssist(${JSON.stringify(summary).replace(/'/g,"&#39;")})">Use as new entry</button>
+        <button class="btn btn-ghost btn-sm" onclick="document.getElementById('ai-assist-result-area').innerHTML=''">Dismiss</button>
+      </div>
+    </div>`;
+  } catch(e){
+    resultArea.innerHTML = '<div style="color:var(--red);font-size:12px;padding:8px">Failed to summarize. Try again.</div>';
+  }
+  
+  btn.disabled = false;
+  btn.textContent = '📋 Summarize task logs';
+}
+
+// ═══════════════════════════════
 // VIEWS
 // ═══════════════════════════════
 let currentView = 'dashboard';
@@ -661,7 +1197,6 @@ function switchView(v, navEl, tabEl){
   document.getElementById('view-'+v).classList.add('active');
   document.querySelectorAll('.nav-item').forEach(el=>el.classList.remove('active'));
   document.querySelectorAll('.view-tab').forEach(el=>el.classList.remove('active'));
-  // sync nav items
   document.querySelectorAll('.nav-item').forEach(el=>{
     if(el.onclick && el.onclick.toString().includes("'"+v+"'")) el.classList.add('active');
   });
@@ -699,15 +1234,12 @@ function renderSidebar(){
     </div>
     ${subs.length?`<div class="subcat-list">`+subs.map(s=>`<div class="cat-sub"><div class="cat-item" onclick="filterByCat('${s.id}')"><span class="cat-dot" style="background:${s.color}"></span><span>${s.name}</span></div></div>`).join('')+'</div>':''}`;
   }).join('');
-  // score
   const score = state.productivity.weekly.reduce((a,b)=>a+b,0);
   document.getElementById('sidebar-score').textContent = score+' pts';
   document.getElementById('sidebar-streak').textContent = (state.productivity.streak||0)+' day streak 🔥';
-  // badge
   document.getElementById('badge-tasks').textContent = state.tasks.filter(t=>t.status!=='done').length;
   document.getElementById('badge-apps').textContent = state.applications.length;
   document.getElementById('badge-notes').textContent = state.logs.length;
-  // populate category selects
   ['task-category','res-category'].forEach(id=>{
     const s = document.getElementById(id);
     if(!s) return;
@@ -906,6 +1438,7 @@ function openLogModal(){
   const sel=document.getElementById('log-task');
   sel.innerHTML=state.tasks.map(t=>`<option value="${t.id}">${t.name}</option>`).join('');
   document.getElementById('log-text').value='';
+  document.getElementById('ai-assist-result-area').innerHTML='';
   openModal('modal-log');
 }
 function saveLog(){
@@ -995,6 +1528,19 @@ function renderDashboard(){
     </div>
   </div>
 
+  <!-- AI SMART SUGGESTIONS WIDGET -->
+  <div class="panel" style="margin-bottom:24px">
+    <div class="panel-header">
+      <div class="panel-title">✨ What should I do next?</div>
+      <div class="panel-action" onclick="loadSmartSuggestions()">↻ Refresh</div>
+    </div>
+    <div id="smart-suggestions-container">
+      <div style="color:var(--text3);font-size:13px;padding:4px 0">
+        <button class="btn btn-ghost btn-sm" onclick="loadSmartSuggestions()">🤖 Get AI suggestions</button>
+      </div>
+    </div>
+  </div>
+
   <div class="dash-row">
     <div class="panel">
       <div class="panel-header">
@@ -1056,6 +1602,7 @@ function renderDashboard(){
       <button class="btn btn-ghost" onclick="openAppModal()">+ Application</button>
       <button class="btn btn-ghost" onclick="openResourceModal()">+ Resource</button>
       <button class="btn btn-ghost" onclick="openLogModal()">+ Log entry</button>
+      <button class="btn btn-ghost" onclick="toggleAIChat()" style="color:var(--accent);border-color:rgba(124,111,255,.3)">✨ Ask AI</button>
     </div>
   </div>`;
 }
@@ -1272,6 +1819,7 @@ function openLogModalFor(taskId){
   sel.innerHTML=state.tasks.map(t=>`<option value="${t.id}">${t.name}</option>`).join('');
   sel.value=taskId;
   document.getElementById('log-text').value='';
+  document.getElementById('ai-assist-result-area').innerHTML='';
   openModal('modal-log');
 }
 function deleteLog(id){ state.logs=state.logs.filter(l=>l.id!==id); saveState(); renderNotes(); }
@@ -1337,7 +1885,6 @@ function renderApplications(){
     </div>`;
   }).join('')}
   </div>`:`<div class="empty-state"><div class="empty-icon">◈</div><div class="empty-title">No applications yet</div><div class="empty-sub">Track fellowships, grants, jobs, and other applications with deadlines and document checklists</div><button class="btn btn-primary" style="margin-top:16px" onclick="openAppModal()">+ New application</button></div>`}`;
-  // live countdown refresh
   if(state.applications.length){ clearInterval(window._cdTimer); window._cdTimer=setInterval(()=>{ if(currentView==='applications') renderApplications(); if(currentView==='dashboard') renderDashboard(); },30000); }
 }
 
@@ -1390,7 +1937,6 @@ function renderAnalytics(){
   const totalDone=state.tasks.filter(t=>t.status==='done').length;
   const total=state.tasks.length;
   const pct=total?Math.round(totalDone/total*100):0;
-  // Heatmap (last 26 weeks × 7 days - simple simulation based on data)
   const hm=[];
   for(let i=181;i>=0;i--){
     const d=new Date(); d.setDate(d.getDate()-i);
@@ -1458,6 +2004,17 @@ function renderAnalytics(){
       <span>More</span>
     </div>
   </div>
+
+  <!-- WEEKLY DIGEST -->
+  <div class="panel" style="margin-bottom:16px">
+    <div class="panel-header">
+      <div class="panel-title">✨ AI Weekly Digest</div>
+      <button class="btn btn-ghost btn-sm" id="digest-btn" onclick="generateWeeklyDigest()">📊 Generate Weekly Digest</button>
+    </div>
+    <div style="font-size:12px;color:var(--text3);margin-bottom:8px">AI-powered summary of your past 7 days: accomplishments, patterns, and suggestions.</div>
+    <div id="digest-container"></div>
+  </div>
+
   <div class="panel">
     <div class="panel-header"><div class="panel-title">Achievements</div></div>
     ${badges.length?`<div style="display:flex;flex-wrap:wrap;gap:8px;padding-top:4px">
@@ -1507,7 +2064,6 @@ renderSidebar();
 renderDashboard();
 initReminders();
 
-// update countdown every minute
 setInterval(()=>{ if(currentView==='applications'||currentView==='dashboard') renderView(currentView); },60000);
 </script>
 </body>
